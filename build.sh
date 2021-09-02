@@ -1,5 +1,5 @@
 #!/bin/bash
-gcc $(yed --print-cflags) $(yed --print-ldflags) -o add_template.so -g add_template.c
+gcc -o add_template.so add_template.c $(yed --print-cflags) $(yed --print-ldflags)
 
 if [ ! -d ~/.yed/templates ]
 then
