@@ -9,10 +9,10 @@ int set_template_completion(char *name, struct yed_completion_results_t *comp_re
     char *tmp;
     char loc[256];
 
-    tmp = abs_path("~/.yed/templates", loc);
+    tmp = get_config_item_path("templates");
     if(tmp == NULL) {
         LOG_FN_ENTER();
-        yed_cerr("~/.yed/template not found");
+        yed_cerr("templates dir not found");
         LOG_EXIT();
         return 0;
     }
@@ -49,6 +49,7 @@ void set_template(int nargs, char** args) {
     char line[512];
     char str[512];
     char app[512];
+    char *path;
     yed_frame *frame;
 
     frame = ys->active_frame;
@@ -64,22 +65,16 @@ void set_template(int nargs, char** args) {
         return;
     }
 
-    strcpy(app, "/");
+    strcpy(app, "templates/");
     strcat(app, args[0]);
-/*     strcat(app, ".txt"); */
-
-    if (!ys->options.no_init) {
-        if (ys->options.init) {
-            abs_path(ys->options.init, str);
-        } else {
-            abs_path("~/.yed/templates/", str);
-        }
-        strcat(str, app);
-    }
 
     FILE *fp;
+    if (!ys->options.no_init) {
+        path = get_config_item_path(app);
+        fp = fopen (path, "r");
+	    free(path);
+    }
 
-    fp = fopen (str, "r");
     if (fp == NULL) {
         return;
     }
